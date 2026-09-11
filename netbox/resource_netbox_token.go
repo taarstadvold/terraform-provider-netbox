@@ -32,6 +32,7 @@ func resourceNetboxToken() *schema.Resource {
 				Type:         schema.TypeString,
 				Sensitive:    true,
 				Optional:     true,
+				ForceNew:     true,
 				ValidateFunc: validation.StringLenBetween(40, 256),
 			},
 			"allowed_ips": {
@@ -101,7 +102,7 @@ func resourceNetboxTokenCreate(ctx context.Context, d *schema.ResourceData, m in
 	}
 	d.SetId(strconv.FormatInt(res.GetPayload().ID, 10))
 
-	return resourceNetboxTokenUpdate(ctx, d, m)
+	return resourceNetboxTokenRead(ctx, d, m)
 }
 
 func resourceNetboxTokenRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -149,11 +150,9 @@ func resourceNetboxTokenUpdate(ctx context.Context, d *schema.ResourceData, m in
 	data := models.WritableToken{}
 
 	userid := int64(d.Get("user_id").(int))
-	key := d.Get("key").(string)
 	allowedIps := d.Get("allowed_ips").([]interface{})
 
 	data.User = &userid
-	data.Key = key
 
 	data.AllowedIps = make([]models.IPNetwork, len(allowedIps))
 	for i, v := range allowedIps {
