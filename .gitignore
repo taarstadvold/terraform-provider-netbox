@@ -37,3 +37,10 @@ website/vendor
 
 # Locally compiled provider
 terraform-provider-netbox
+
+# Local HCP Terraform provider publishing artifacts
+/provider.json
+/key.json
+/key-response.json
+/public-key.asc
+/private-key.asc
